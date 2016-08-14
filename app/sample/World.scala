@@ -15,12 +15,11 @@ import akka.actor.Props
 object World {
   val dimention = 5
   val system = ActorSystem("FastRank")
-  val actors = for (i <- 0 until dimention) yield system.actorOf(Props[CountingActor], name = "node" + i.toString)
+  val emptyList = Nil
+  val actors = for (i <- 0 until dimention) yield system.actorOf(Props(new CountingActor(emptyList)), name = "node" + i.toString)
 
   def await = {
-    println("shuting down")
     system.shutdown
-    println("waiting");
     system.awaitTermination
     
   }

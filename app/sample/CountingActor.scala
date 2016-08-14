@@ -14,7 +14,7 @@ object CountingActor {
 
 }
 
-class CountingActor extends Actor {
+class CountingActor(friends: List[Int]) extends Actor {
 
   import CountingActor._
 
