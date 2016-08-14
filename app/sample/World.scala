@@ -10,27 +10,19 @@ import scala.concurrent._
 import scala.util._
 import org.springframework.scala.context.function._
 import CountingActor._
+import akka.actor.Props
 
 object World {
   val dimention = 5
-  
-  // create a spring context
-  implicit val ctx = FunctionalConfigApplicationContext(classOf[AppConfiguration])
-
-  import Config._
-  // get hold of the actor system
-  val system = ctx.getBean(classOf[ActorSystem])
-
-  val prop = SpringExtentionImpl(system).props("countingActor")
-
-  // use the Spring Extension to create props for a named actor bean
-  val counter = system.actorOf(prop, "counter")
-
-  val actors = for (i <- 0 until dimention) yield system.actorOf(prop, i.toString)
+  val system = ActorSystem("FastRank")
+  val actors = for (i <- 0 until dimention) yield system.actorOf(Props[CountingActor], name = "node" + i.toString)
 
   def await = {
+    println("shuting down")
     system.shutdown
+    println("waiting");
     system.awaitTermination
+    
   }
 
 }

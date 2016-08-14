@@ -26,7 +26,7 @@ class CountingActor extends Actor {
     case i: Int if !messages.contains(i) => {
       messages.+=(i)
       //find two random actors and forward the message
-      Random.shuffle(World.actors).take(2).map { _ ! i }
+      Random.shuffle(World.actors).take(3).map { _ ! i }
     }
     case COUNT       => count = countingService.increment(count)
     case GET         => sender ! count
