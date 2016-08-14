@@ -1,7 +1,8 @@
 *.class
 *.log
 *.jar
-
+activator
+activator.bat
 
 # sbt specific
 .cache
