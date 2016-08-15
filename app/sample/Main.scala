@@ -34,5 +34,7 @@ object Main extends App {
     case Failure(failure) => println(s"Got an exception $failure")
   }
 
+  World.generateFriends
+  
   World.await
 }

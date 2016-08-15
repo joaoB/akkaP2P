@@ -24,6 +24,7 @@ class CountingActor(friends: List[Int]) extends Actor {
 
   def receive = {
     case i: Int if !messages.contains(i) => {
+      //println("a")
       messages.+=(i)
       //find two random actors and forward the message
       Random.shuffle(World.actors).take(3).map { _ ! i }

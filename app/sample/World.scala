@@ -1,17 +1,10 @@
 package sample
 
+import scala.collection.mutable.ArrayBuffer
+import scala.util.Random
+
 import akka.actor.ActorSystem
-import akka.actor.{ ActorRef, ActorSystem }
-import sample.SpringExtension._
-import scala.concurrent.duration._
-import akka.util.Timeout
-import akka.pattern.ask
-import scala.concurrent._
-import scala.util._
-import org.springframework.scala.context.function._
-import CountingActor._
 import akka.actor.Props
-import scala.collection.mutable.ListBuffer
 
 object World {
   val dimention = 50
@@ -26,22 +19,32 @@ object World {
   }
 
   def generateFriends = {
-    var connections = new ListBuffer[ListBuffer[Int]]()
+    var connections = new ArrayBuffer[ArrayBuffer[Int]]
+
     def addFriend(index: Int): Int = {
-      var r = new Random()
+      val r = new Random()
       val f = r.nextInt(dimention)
-      connections(index).+=:(connections(index) match {
-        case c if !c.contains(f) => f
-        case _                   => addFriend(index)
-      })
-      f
+      val toAdd = connections(index) match {
+        case c if !c.contains(f) && index != f => {
+          connections(index).+=(f)
+          connections(f).+=(index)
+          f
+        }
+        case _ => addFriend(index)
+      }
+      toAdd
     }
-    val friends = for (i <- 0 until dimention) yield {
+
+    for (i <- 0 until dimention)
+      connections.+=:(new ArrayBuffer[Int])
+
+    for (i <- 0 until dimention) {
       while (connections(i).length < minfriendsAmount) {
         addFriend(i)
       }
+      println("asdasd: " + i + " ==== " + connections(i))
     }
-
+    connections
   }
 
 }
