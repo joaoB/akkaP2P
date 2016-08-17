@@ -14,7 +14,7 @@ object Main extends App {
   import scala.util.Random
   val r = new Random()
   for (i <- 1 to 50) {
-    World.actors(Math.abs(r.nextInt() % 5)) ! i
+    World.actors(Math.abs(r.nextInt() % World.dimention)) ! i
   }
 
   import Config._
