@@ -6,12 +6,12 @@ import scala.util.Random
 import akka.actor.ActorSystem
 import akka.actor.Props
 
-object World {
+class World {
   val dimention = 50
   val minfriendsAmount = 10
   val system = ActorSystem("FastRank")
-  val emptyList = Nil
-  val actors = for (i <- 0 until dimention) yield system.actorOf(Props(new CountingActor(emptyList)), name = "node" + i.toString)
+  val connections = generateFriends
+  val actors = 0.until(dimention).map(id => system.actorOf(Props(new CountingActor(id, connections(id).toList)), name = "node" + id.toString))
 
   def await = {
     system.shutdown
@@ -19,7 +19,7 @@ object World {
   }
 
   def generateFriends = {
-    var connections = new ArrayBuffer[ArrayBuffer[Int]]
+    var connections = 0.until(dimention).map { _ => new ArrayBuffer[Int] }
 
     def addFriend(index: Int): Int = {
       val r = new Random()
@@ -35,16 +35,16 @@ object World {
       toAdd
     }
 
-    for (i <- 0 until dimention)
-      connections.+=:(new ArrayBuffer[Int])
-
-    for (i <- 0 until dimention) {
-      while (connections(i).length < minfriendsAmount) {
-        addFriend(i)
-      }
-      println("asdasd: " + i + " ==== " + connections(i))
+    0.until(dimention) foreach {
+      i =>
+        while (connections(i).length < minfriendsAmount) {
+          addFriend(i)
+        }
     }
+
     connections
   }
 
 }
+
+object World extends World
